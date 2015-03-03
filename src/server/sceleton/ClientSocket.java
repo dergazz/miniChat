@@ -49,7 +49,15 @@ public class ClientSocket {
         return true;
     }
 
-
+    public void closeSocket(){
+        try {
+            inputStream.close();
+            outputStream.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

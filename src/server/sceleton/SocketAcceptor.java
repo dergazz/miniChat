@@ -11,6 +11,8 @@ public class SocketAcceptor extends Thread{
 
     public SocketAcceptor() {
         super("SocketAcceptor");
+        ClientSocketRemover clientSocketRemover = new ClientSocketRemover();
+        clientSocketRemover.start();
     }
 
     public void addToAcceptQueue(Socket socket) {

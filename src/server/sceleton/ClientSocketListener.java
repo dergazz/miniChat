@@ -18,7 +18,9 @@ public class ClientSocketListener extends Thread {
             try {
                 InputHandler.handle(clientSocket, clientSocket.readUTF());
             } catch (IOException e) {
+
                 ClientSocketHandler.onConnectionBreak(clientSocket);
+                break;
             }
         }
 

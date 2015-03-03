@@ -8,12 +8,11 @@ public class HeapServerSenders {
 
     private static ServerSender getSender() {
         for (ServerSender aServerSender :list) {
-            if (aServerSender.getListSize() < 2) {
+            if (aServerSender.getListSize() < 100) {
                 return aServerSender;
             }
         }
         ServerSender serverSender = new ServerSender();
-        System.out.println("new serverSender created");
         list.add(serverSender);
         serverSender.start();
         return serverSender;
@@ -27,9 +26,9 @@ public class HeapServerSenders {
     }
 
     public static void removeSender(ServerSender serverSender) {
-        if (list.size() > 1) {
-            list.remove(serverSender);
-        }
+        list.remove(serverSender);
+//        if (list.size() > 1) {
+//        }
     }
 
     private static void print() {
@@ -38,6 +37,19 @@ public class HeapServerSenders {
             System.out.println(list.get(i));
         }
         System.out.println("end. Totally " + list.size());
+    }
+
+    public static String getList() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            stringBuilder.append(list.get(i))
+                    .append(" ")
+                    .append(list.get(i).getListSize())
+                    .append("\n");
+        }
+        stringBuilder.append("Total ")
+                .append(list.size());
+        return stringBuilder.toString();
     }
 
 }

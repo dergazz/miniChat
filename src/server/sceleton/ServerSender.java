@@ -16,9 +16,11 @@ public class ServerSender extends Thread{
 
     public void removeClientSocketFromList(ClientSocket clientSocket) {
         clientSocketArrayList.remove(clientSocket);
+
         if (clientSocketArrayList.isEmpty()) {
             HeapServerSenders.removeSender(this);
         }
+
     }
 
     public int getListSize() {
@@ -35,15 +37,19 @@ public class ServerSender extends Thread{
 
     @Override
     public void run() {
-        ServerMessage serverMessage = queue.remove();
+        while (!Thread.interrupted()) {
+            ServerMessage serverMessage = queue.remove();
+            ClientSocket toClientSocket = serverMessage.getClientSocket();
+            String text = serverMessage.getMessageString();
 
-        if (serverMessage.getClientSocket().writeUTF(serverMessage.getMessageString())) {
-            //sended
-
-        } else {
-            //not sended
-            ClientSocketHandler.onConnectionBreak(serverMessage.getClientSocket());
+            if (toClientSocket.writeUTF(text)) {
+                //sended
+            } else {
+                //not sended
+                ClientSocketHandler.onConnectionBreak(serverMessage.getClientSocket());
+            }
         }
+
     }
 
 }

@@ -5,12 +5,6 @@ import java.net.Socket;
 
 public class ClientSocketHandler {
 
-//    static private ServerSender serverSender = new ServerSender();
-//
-//    public static void init() {
-//        serverSender.start();
-//    }
-
     public static boolean onConnection(Socket socket) {
         try {
             ClientSocket clientSocket = new ClientSocket(socket);
@@ -20,12 +14,19 @@ public class ClientSocketHandler {
             return false;
         }
 
+        System.out.println("socket connected");
         return true;
     }
 
     public static boolean onConnectionBreak(ClientSocket clientSocket) {
+        ClientSocketRemover.addClientSocketToRemove(clientSocket);
+        return true;
+    }
 
+    public static boolean close(ClientSocket clientSocket) {
         clientSocket.getServerSender().removeClientSocketFromList(clientSocket);
+        clientSocket.closeSocket();
+        System.out.println("socket closed");
         return true;
     }
 
