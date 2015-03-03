@@ -43,11 +43,7 @@ public class HeapClients {
     }
 
     public static int getNumber() {
-        int count = 0;
-        for (Client client :list) {
-            count++;
-        }
-        return count;
+        return list.size();
     }
 
 }

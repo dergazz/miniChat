@@ -15,6 +15,7 @@ public class Client {
     public Client(ClientSocket clientSocket, int id) throws IOException {
         this.id = id;
         this.clientSocket = clientSocket;
+        name = "defaultname";
         isLogin = true;
     }
 
@@ -35,5 +36,13 @@ public class Client {
 
     public int getId() {
         return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

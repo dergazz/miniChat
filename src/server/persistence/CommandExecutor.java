@@ -18,7 +18,13 @@ public class CommandExecutor {
                 .append(clientSocket.getServerSender().isAlive())
                 .append(">")
                 .append("\n")
-                .append(DBHandler.getAllEntries());
+                .append(DBHandler.getAllEntries())
+                .append("\n");
+        Client client = clientSocket.getClient();
+//        Client client = ClientHandler.getClientBySocket(clientSocket);
+        if (client != null) {
+            stringBuilder.append(client.getName());
+        }
         return stringBuilder.toString();
     }
 
@@ -45,8 +51,11 @@ public class CommandExecutor {
         if (DBHandler.clientIDExist(id)) return "SRV ID already exists.";
 
         if (ClientHandler.createClient(clientSocket, id)) {
-            DBHandler.addClient(id, pass);
+            client = clientSocket.getClient();
+//            client = ClientHandler.getClientBySocket(clientSocket);
+            DBHandler.addClient(client, pass);
             return "SRV User success registered.";
+
         } else return "SRV Something wrong.";
     }
 
@@ -81,7 +90,15 @@ public class CommandExecutor {
                 HeapClients.removeClient(client);
             }
             ClientHandler.createClient(clientSocket, id);
+            ClientHandler.fillClientInfo(id);
             return "SRV Success login.";
         }
+    }
+
+    public static String cmdSetName(ClientSocket clientSocket, String string) {
+        String nameRoom = Parser.parseOne(string, 9);
+        clientSocket.getClient().setName(nameRoom);
+        DBHandler.refresh(clientSocket.getClient());
+        return "SRV Name changed.";
     }
 }

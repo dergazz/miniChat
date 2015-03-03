@@ -10,7 +10,9 @@ public class ClientHandler {
     public static boolean createClient(ClientSocket clientSocket, int id) {
         try {
             Client client = new Client(clientSocket, id);
+            clientSocket.setClient(client);
             HeapClients.addClient(client);
+
 
             System.out.println(client.getId() + " in. Total " + HeapClients.getNumber() + ".");
         } catch (IOException e) {
@@ -20,6 +22,7 @@ public class ClientHandler {
     }
 
     public static boolean fillClientInfo(int id) {
+        DBHandler.fillClient(HeapClients.getClientByID(id), id);
         return true;
     }
 
@@ -29,8 +32,8 @@ public class ClientHandler {
         return true;
     }
 
-    public static Client getClientBySocket(ClientSocket clientSocket) {
-        return HeapClients.getClientBySocket(clientSocket);
-    }
+//    public static Client getClientBySocket(ClientSocket clientSocket) {
+//        return HeapClients.getClientBySocket(clientSocket);
+//    }
 
 }

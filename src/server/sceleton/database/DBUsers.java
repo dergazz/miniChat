@@ -35,6 +35,14 @@ public class DBUsers {
         }
         return null;
     }
+    public DBUserEntry getEntryByID(int id) {
+        for (DBUserEntry dbUserEntry :entries) {
+            if (id == dbUserEntry.id) {
+                return dbUserEntry;
+            }
+        }
+        return null;
+    }
 
     public String getAllEntrys() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -49,7 +57,7 @@ public class DBUsers {
         return stringBuilder.toString();
     }
 
-    private class DBUserEntry {
+    public class DBUserEntry {
         int id;
         String name;
         ArrayList<Client> friends = new ArrayList<Client>();
@@ -63,8 +71,9 @@ public class DBUsers {
             this.password = password;
         }
 
-
-
+        public String getName() {
+            return name;
+        }
     }
 
 }

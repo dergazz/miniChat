@@ -28,8 +28,12 @@ public class InputHandler {
             answer = CommandExecutor.cmdSenders();
             clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
         }
+        if (inputString.startsWith("/setname")) {
+            answer = CommandExecutor.cmdSetName(clientSocket, inputString);
+            clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
+        }
+        clientSocket.sendServerMessage(new ServerMessage(clientSocket, "echo: " + inputString));
         if (inputString.startsWith("/echo")) {
-            clientSocket.sendServerMessage(new ServerMessage(clientSocket, "echo: " + inputString));
         }
 
     }

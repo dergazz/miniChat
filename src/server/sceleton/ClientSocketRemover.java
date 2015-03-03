@@ -26,7 +26,7 @@ public class ClientSocketRemover extends Thread{
         while (!Thread.interrupted()) {
             ClientSocket clientSocket = queue.remove();
 
-            Client client = ClientHandler.getClientBySocket(clientSocket);
+            Client client = clientSocket.getClient();
             if (client != null)
             ClientHandler.removeClient(client);
             ClientSocketHandler.close(clientSocket);

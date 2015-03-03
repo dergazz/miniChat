@@ -1,6 +1,7 @@
 package server.sceleton;
 
 import entity.ServerMessage;
+import server.persistence.Client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,6 +15,7 @@ public class ClientSocket {
     private DataOutputStream outputStream;
     private ClientSocketListener clientSocketListener;
     private ServerSender serverSender;
+    private Client client;
 
     public ClientSocket(Socket socket) throws IOException {
         this.socket = socket;
@@ -21,6 +23,14 @@ public class ClientSocket {
         outputStream = new DataOutputStream(socket.getOutputStream());
         clientSocketListener = new ClientSocketListener(this);
         clientSocketListener.start();
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public void setServerSender(ServerSender serverSender) {

@@ -22,7 +22,7 @@ public class ClientSocketHandler {
 
     public static boolean onConnectionBreak(ClientSocket clientSocket) {
         ClientSocketRemover.addClientSocketToRemove(clientSocket);
-        if (ClientHandler.getClientBySocket(clientSocket) != (null)) ClientHandler.getClientBySocket(clientSocket).setOffline();
+        if (clientSocket.getClient() != (null)) clientSocket.getClient().setOffline();
         return true;
     }
 
