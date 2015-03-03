@@ -4,20 +4,28 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SocketCatcher {
+public class SocketCatcher extends Thread{
 
-    ServerSocket serverSocket;
-    SocketAcceptor socketAcceptor = new SocketAcceptor();
+    private ServerSocket serverSocket;
+    private SocketAcceptor socketAcceptor;
 
 
     public SocketCatcher(ServerSocket serverSocket) {
+        super("SocketCatcher");
         this.serverSocket = serverSocket;
+        socketAcceptor = new SocketAcceptor();
+        socketAcceptor.start();
     }
 
-    public void loop() throws IOException {
-        socketAcceptor.loop();
+    @Override
+    public void run() {
         while (!Thread.interrupted()) {
-            Socket clientSocket = serverSocket.accept();
+            Socket clientSocket = null;
+            try {
+                clientSocket = serverSocket.accept();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             socketAcceptor.addToAcceptQueue(clientSocket);
         }
     }

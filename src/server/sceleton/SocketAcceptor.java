@@ -1,20 +1,27 @@
 package server.sceleton;
 
+import entity.Queue;
+
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.Queue;
 
-public class SocketAcceptor {
+public class SocketAcceptor extends Thread{
 
-    Queue<Socket> queue = new LinkedList<Socket>();
+    private Queue<Socket> queue = new Queue<Socket>();
+//    private ClientSocketHandler clientSocketHandler = new ClientSocketHandler();
+
+    public SocketAcceptor() {
+        super("SocketAcceptor");
+    }
 
     public void addToAcceptQueue(Socket socket) {
         queue.add(socket);
     }
 
-    public void loop() {
+    @Override
+    public void run() {
         while (!Thread.interrupted()) {
-            queue.remove();
+            Socket clientSocket = queue.remove();
+            ClientSocketHandler.onConnection(clientSocket);
         }
     }
 
