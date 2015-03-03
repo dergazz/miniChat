@@ -9,16 +9,26 @@ public class InputHandler {
 
         String answer;
         if (inputString.startsWith("/reg")) {
-            clientSocket.sendServerMessage(new ServerMessage(clientSocket, "you try to register"));
+            answer = CommandExecutor.cmdRegister(clientSocket, inputString);
+            clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
         }
-        else if (inputString.startsWith("/info")) {
+        if (inputString.startsWith("/log")) {
+            answer = CommandExecutor.cmdLogin(clientSocket, inputString);
+            clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
+        }
+        if (inputString.startsWith("/info")) {
             answer = CommandExecutor.cmdInfo(clientSocket);
             clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
-        } else if (inputString.startsWith("/senders")) {
+        }
+        if (inputString.startsWith("/online")) {
+            answer = CommandExecutor.cmdOnline();
+            clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
+        }
+        if (inputString.startsWith("/senders")) {
             answer = CommandExecutor.cmdSenders();
             clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
-        } else {
-
+        }
+        if (inputString.startsWith("/echo")) {
             clientSocket.sendServerMessage(new ServerMessage(clientSocket, "echo: " + inputString));
         }
 

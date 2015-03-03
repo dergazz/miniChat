@@ -16,11 +16,7 @@ public class ServerSender extends Thread{
 
     public void removeClientSocketFromList(ClientSocket clientSocket) {
         clientSocketArrayList.remove(clientSocket);
-
-        if (clientSocketArrayList.isEmpty()) {
-            HeapServerSenders.removeSender(this);
-        }
-
+        HeapServerSenders.checkSender(this);
     }
 
     public int getListSize() {

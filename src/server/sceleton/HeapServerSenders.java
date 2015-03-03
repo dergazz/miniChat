@@ -25,10 +25,8 @@ public class HeapServerSenders {
 
     }
 
-    public static void removeSender(ServerSender serverSender) {
+    private static void removeSender(ServerSender serverSender) {
         list.remove(serverSender);
-//        if (list.size() > 1) {
-//        }
     }
 
     private static void print() {
@@ -52,4 +50,10 @@ public class HeapServerSenders {
         return stringBuilder.toString();
     }
 
+    public static boolean checkSender(ServerSender serverSender) {
+        if (serverSender.listIsEmpty()) {
+            removeSender(serverSender);
+        }
+        return false;
+    }
 }

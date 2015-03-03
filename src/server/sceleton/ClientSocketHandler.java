@@ -1,5 +1,7 @@
 package server.sceleton;
 
+import server.persistence.ClientHandler;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -20,6 +22,7 @@ public class ClientSocketHandler {
 
     public static boolean onConnectionBreak(ClientSocket clientSocket) {
         ClientSocketRemover.addClientSocketToRemove(clientSocket);
+        if (ClientHandler.getClientBySocket(clientSocket) != (null)) ClientHandler.getClientBySocket(clientSocket).setOffline();
         return true;
     }
 
