@@ -9,7 +9,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class HeapClients {
 
 //    private static ArrayList<Client> list = new ArrayList<Client>();
-    private static List<Client> list = new CopyOnWriteArrayList<Client>();
+    private static List<Client> list;
+
+    public static void init() {
+        list = new CopyOnWriteArrayList<Client>();
+    }
 
 
     public static void addClient(Client client) {

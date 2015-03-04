@@ -4,11 +4,15 @@ import java.util.ArrayList;
 
 public class HeapServerSenders {
 
-    private static ArrayList<ServerSender> list = new ArrayList<ServerSender>();
+    private static ArrayList<ServerSender> list;
+
+    public static void init() {
+        list = new ArrayList<ServerSender>();
+    }
 
     private static ServerSender getSender() {
         for (ServerSender aServerSender :list) {
-            if (aServerSender.getListSize() < 100) {
+            if (aServerSender.getListSize() < 300) {
                 return aServerSender;
             }
         }
@@ -53,6 +57,7 @@ public class HeapServerSenders {
     public static boolean checkSender(ServerSender serverSender) {
         if (serverSender.listIsEmpty()) {
             removeSender(serverSender);
+            return true;
         }
         return false;
     }

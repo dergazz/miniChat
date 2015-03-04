@@ -45,18 +45,22 @@ public class ClientSocket {
         serverSender.addServerMessage(serverMessage);
     }
 
-    public String readUTF() throws IOException {
+    public String readIn() throws IOException {
         return inputStream.readUTF();
+//        try {
+//        } catch (IOException e) {
+//            return "ERROR";
+//        }
     }
 
-    public boolean writeUTF(String string){
-        try {
-            outputStream.writeUTF(string);
-            outputStream.flush();
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
+    public synchronized void writeOut(String string) throws IOException {
+        outputStream.writeUTF(string);
+//        try {
+//            outputStream.flush();
+//        } catch (IOException e) {
+//            return false;
+//        }
+//        return true;
     }
 
     public void closeSocket(){

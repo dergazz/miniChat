@@ -15,11 +15,12 @@ public class ClientSocketListener extends Thread {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
+
             try {
-                InputHandler.handle(clientSocket, clientSocket.readUTF());
+                InputHandler.handle(clientSocket, clientSocket.readIn());
             } catch (IOException e) {
 
-                ClientSocketHandler.onConnectionBreak(clientSocket);
+                ClientSocketManager.onConnectionBreak(clientSocket);
                 break;
             }
         }

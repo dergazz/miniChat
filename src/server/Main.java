@@ -1,7 +1,6 @@
 package server;
 
 import server.sceleton.Server;
-
 import java.io.IOException;
 
 public class Main {
@@ -11,9 +10,10 @@ public class Main {
 
         try {
             Server server = new Server(port);
+            server.init();
             server.loop();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("new Server() exception.");
         }
 
 

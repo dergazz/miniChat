@@ -2,8 +2,7 @@ package server.sceleton;
 
 import entity.Queue;
 import server.persistence.Client;
-import server.persistence.ClientHandler;
-import server.persistence.HeapClients;
+import server.persistence.ClientManager;
 
 public class ClientSocketRemover extends Thread{
 
@@ -27,9 +26,11 @@ public class ClientSocketRemover extends Thread{
             ClientSocket clientSocket = queue.remove();
 
             Client client = clientSocket.getClient();
-            if (client != null)
-            ClientHandler.removeClient(client);
-            ClientSocketHandler.close(clientSocket);
+            if (client != null) {
+                ClientManager.removeClient(client);
+
+            }
+            ClientSocketManager.close(clientSocket);
 
         }
     }

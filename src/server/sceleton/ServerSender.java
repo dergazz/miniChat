@@ -3,6 +3,7 @@ package server.sceleton;
 import entity.Queue;
 import entity.ServerMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ServerSender extends Thread{
@@ -36,13 +37,10 @@ public class ServerSender extends Thread{
         while (!Thread.interrupted()) {
             ServerMessage serverMessage = queue.remove();
             ClientSocket toClientSocket = serverMessage.getClientSocket();
-            String text = serverMessage.getMessageString();
-
-            if (toClientSocket.writeUTF(text)) {
-                //sended
-            } else {
-                //not sended
-                ClientSocketHandler.onConnectionBreak(serverMessage.getClientSocket());
+            try {
+                toClientSocket.writeOut(serverMessage.getMessageString());
+            } catch (IOException e) {
+                ClientSocketManager.onConnectionBreak(serverMessage.getClientSocket());
             }
         }
 

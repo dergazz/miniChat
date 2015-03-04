@@ -23,7 +23,7 @@ public class SocketAcceptor extends Thread{
     public void run() {
         while (!Thread.interrupted()) {
             Socket clientSocket = queue.remove();
-            ClientSocketHandler.onConnection(clientSocket);
+            ClientSocketManager.onConnection(clientSocket);
         }
     }
 
