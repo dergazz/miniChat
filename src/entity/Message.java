@@ -1,41 +1,49 @@
 package entity;
 
-import server.persistence.Client;
-import server.persistence.Room;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Message {
+public abstract class Message {
 
-    private Client client;
-    private String string;
-    private Room room;
-    private String dateAndTime;
+    private Addresser addresser;
+    private Recipient recipient;
+    private String text;
+    private Date date;
 
-    public Message(Client client, String string, Room room) {
-        this.client = client;
-        this.string = string;
-        this.room = room;
+
+    public Message(Addresser addresser, Recipient recipient, String text) {
+        this.addresser = addresser;
+        this.recipient = recipient;
+        this.text = text;
+        date = new Date();
+    }
+
+    public Message(Recipient recipient, String text) {
+        this.addresser = null;
+        this.recipient = recipient;
+        this.text = text;
+        date = new Date();
+    }
+
+    public Addresser getAddresser() {
+        return addresser;
+    }
+
+    public Recipient getRecipient() {
+        return recipient;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getStringDate() {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
-        dateAndTime = format.format(date);
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public String getString() {
-        return string;
-    }
-
-    public Room getRoom() {
-        return room;
+        return format.format(date);
     }
 
     @Override
-    public String toString() {
-        return "[" + dateAndTime + "] " + client.getName() + ": " + string;
-    }
+    public abstract String toString();
+
 }

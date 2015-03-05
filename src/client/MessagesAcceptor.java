@@ -19,7 +19,7 @@ public class MessagesAcceptor extends Thread {
         while (!Thread.interrupted())
             try {
                 String ss = in.readUTF();
-                printer.addMessage(ss);
+                printer.addToQueue(ss);
             } catch (IOException e) {
                 System.out.println("exit");
                 System.exit(0);

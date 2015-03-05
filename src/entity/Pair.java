@@ -1,20 +1,20 @@
 package entity;
 
-public class Pair {
+public class Pair<T1, T2> {
 
-    private String key;
-    private String value;
+    private T1 key;
+    private T2 value;
 
-    public Pair(String key, String value) {
+    public Pair(T1 key, T2 value) {
         this.key = key;
         this.value = value;
     }
 
-    public String getKey() {
+    public T1 getKey() {
         return key;
     }
 
-    public String getValue() {
+    public T2 getValue() {
         return value;
     }
 

@@ -1,11 +1,10 @@
 package entity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Queue<T> {
-//    List<T> queue = new ArrayList<T>();
+
     private List<T> queue = new CopyOnWriteArrayList<T>();
 
 

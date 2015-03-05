@@ -1,28 +1,22 @@
 package server.persistence;
 
-import entity.ServerMessage;
+import entity.Message;
+import entity.Recipient;
+import entity.Resender;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Room {
+public class Room implements Recipient {
 
-    private String id;
     private String name;
-    private Sender sender;
-    //    private ArrayList<Client> list = new ArrayList<Client>();
+    private Resender sender;
     private List<Client> list = new CopyOnWriteArrayList<Client>();
-
-
-    public Room() {
-        this("defaultroomname");
-    }
 
     public Room(String name) {
         this.name = name;
-//        sender =
-        HeapSenders.addRoomToSender(this);
+        Manager.roomResendersManager.addRecipientToResender(this);
     }
 
     public void addClient(Client client) {
@@ -31,28 +25,6 @@ public class Room {
 
     public void removeClient(Client client) {
         list.remove(client);
-
-        if (name.startsWith("PrivateRoom")) {
-            for (Client aClient : list) {
-                if (!aClient.equals(client)) {
-                    aClient.getClientSocket().sendServerMessage(new ServerMessage(aClient.getClientSocket(), "SRV[escroom]<" + name + ">" + client.getName() + " escapes the room " + name + "."));
-                    aClient.getRoomList().remove(this);
-                    list.remove(aClient);
-                }
-            }
-
-            sender.removeRoom(this);
-            HeapRooms.removeRoom(this);
-        }
-
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getSize() {
@@ -63,11 +35,31 @@ public class Room {
         return list;
     }
 
-    public void setSender(Sender sender) {
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setResender(Resender sender) {
         this.sender = sender;
     }
 
-    public Sender getSender() {
+    @Override
+    public Resender getResender() {
         return sender;
+    }
+
+    @Override
+    public synchronized void send(Message message) {
+
+        List<Client> clientList = list;
+        for (Client client :clientList) {
+            try {
+                Manager.clientsManager.send(client, message.toString());
+            } catch (IOException e) {
+                Manager.clientsManager.onConnectionBreak(client);
+            }
+        }
     }
 }

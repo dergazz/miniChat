@@ -1,20 +1,23 @@
 package server.sceleton;
 
-import entity.ServerMessage;
+import entity.Message;
+import entity.Recipient;
+import entity.Resender;
 import server.persistence.Client;
+import server.persistence.Manager;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientSocket {
+public class ClientSocket implements Recipient {
 
     private Socket socket;
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
     private ClientSocketListener clientSocketListener;
-    private ServerSender serverSender;
+    private Resender resender;
     private Client client;
 
     public ClientSocket(Socket socket) throws IOException {
@@ -33,34 +36,23 @@ public class ClientSocket {
         this.client = client;
     }
 
-    public void setServerSender(ServerSender serverSender) {
-        this.serverSender = serverSender;
+    @Override
+    public void setResender(Resender serverSender) {
+        this.resender = serverSender;
     }
 
-    public ServerSender getServerSender() {
-        return serverSender;
-    }
-
-    public void sendServerMessage(ServerMessage serverMessage) {
-        serverSender.addServerMessage(serverMessage);
+    @Override
+    public Resender getResender() {
+        return resender;
     }
 
     public String readIn() throws IOException {
         return inputStream.readUTF();
-//        try {
-//        } catch (IOException e) {
-//            return "ERROR";
-//        }
     }
 
     public synchronized void writeOut(String string) throws IOException {
-        outputStream.writeUTF(string);
-//        try {
-//            outputStream.flush();
-//        } catch (IOException e) {
-//            return false;
-//        }
-//        return true;
+        if (socket.isConnected())
+            outputStream.writeUTF(string);
     }
 
     public void closeSocket(){
@@ -74,5 +66,18 @@ public class ClientSocket {
     }
 
 
+    @Override
+    public String getName() {
+        return null;
+    }
 
+    @Override
+    public synchronized void send(Message message) {
+        try {
+            writeOut(message.toString());
+        } catch (IOException e) {
+            Manager.clientSocketsManager.onConnectionBreak(this);
+        }
+
+    }
 }

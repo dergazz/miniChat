@@ -1,9 +1,9 @@
 package server.sceleton;
 
-import server.persistence.HeapClients;
-import server.persistence.HeapRooms;
-import server.persistence.HeapSenders;
-import server.persistence.Room;
+import server.persistence.ClientsManager;
+import server.persistence.Manager;
+import server.persistence.RoomsManager;
+//import server.persistence.SendersManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,12 +19,8 @@ public class Server {
     }
 
     public void init() {
-        HeapSenders.init();
-        HeapRooms.init();
-        HeapServerSenders.init();
-        HeapClients.init();
-
-
+        //загрузка всего
+        Manager.init();
     }
 
     public void loop() throws IOException {

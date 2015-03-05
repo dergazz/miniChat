@@ -2,22 +2,14 @@ package entity;
 
 import server.sceleton.ClientSocket;
 
-public class ServerMessage {
+public class ServerMessage extends Message {
 
-    ClientSocket clientSocket;
-    String messageString;
-
-    public ServerMessage(ClientSocket clientSocket, String messageString) {
-        this.clientSocket = clientSocket;
-        this.messageString = messageString;
+    public ServerMessage(Recipient recipient, String text) {
+        super(recipient, text);
     }
 
-    public ClientSocket getClientSocket() {
-        return clientSocket;
+    @Override
+    public String toString() {
+        return "SRV " + "[" + getStringDate() + "] " + getText();
     }
-
-    public String getMessageString() {
-        return messageString;
-    }
-
 }

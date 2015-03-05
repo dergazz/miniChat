@@ -1,6 +1,7 @@
 package server.sceleton;
 
 import server.persistence.InputHandler;
+import server.persistence.Manager;
 
 import java.io.IOException;
 
@@ -19,8 +20,7 @@ public class ClientSocketListener extends Thread {
             try {
                 InputHandler.handle(clientSocket, clientSocket.readIn());
             } catch (IOException e) {
-
-                ClientSocketManager.onConnectionBreak(clientSocket);
+                Manager.clientSocketsManager.onConnectionBreak(clientSocket);
                 break;
             }
         }

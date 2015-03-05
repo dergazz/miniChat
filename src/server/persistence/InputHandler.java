@@ -2,6 +2,7 @@ package server.persistence;
 
 import entity.ServerMessage;
 import server.sceleton.ClientSocket;
+//import server.sceleton.ServerSendersManager;
 
 public class InputHandler {
 
@@ -10,67 +11,54 @@ public class InputHandler {
         if (inputString == null) {
             return;
         }
-        String answer = "";
+        String answer;
 
         if (inputString.equals("/exit")) {
             CommandExecutor.cmdExit(clientSocket);
             return;
-        }
-
-        if (inputString.startsWith("/help")) {
+        } else if (inputString.startsWith("/help")) {
             answer = CommandExecutor.cmdHelp();
-            clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
+            ServerMessage message = new ServerMessage(clientSocket, answer);
+            Manager.serverResendersManager.addMessage(message);
             return;
         }
 
-
         if (clientSocket.getClient() == null) {
-
-            answer = "SRV Please login or register.";
+            answer = "Please login or register.";
             if (inputString.startsWith("/reg")) {
                 answer = CommandExecutor.cmdRegister(clientSocket, inputString);
-            }
-
-            if (inputString.startsWith("/log")) {
+            } else if (inputString.startsWith("/log")) {
                 answer = CommandExecutor.cmdLogin(clientSocket, inputString);
             }
         } else {
-            answer = "SRV Wrong command.";
-            if (inputString.startsWith("/online")) {
-                answer = CommandExecutor.cmdOnline();
-            }
-            if (inputString.startsWith("/senders")) {
-                answer = CommandExecutor.cmdSenders();
-            }
-            if (inputString.startsWith("/setname")) {
+            answer = "Wrong command.";
+            if (inputString.startsWith("/reg")) {
+                answer = "You already online.";
+            } else if (inputString.startsWith("/log")) {
+                answer = "You already online.";
+            } else if (inputString.startsWith("/setname")) {
                 answer = CommandExecutor.cmdSetName(clientSocket, inputString);
-            }
-            if (inputString.startsWith("/createroom")) {
+            } else if (inputString.startsWith("/createroom")) {
                 answer = CommandExecutor.cmdCreateRoom(clientSocket, inputString);
-            }
-            if (inputString.startsWith("/addtoroom")) {
-                answer = CommandExecutor.cmdAddClientToRoom(clientSocket, inputString);
-            }
-            if (inputString.startsWith("/escroom")) {
+            } else if (inputString.startsWith("/addtoroom")) {
+                answer = CommandExecutor.cmdJoinRoom(clientSocket, inputString);
+            } else if (inputString.startsWith("/escroom")) {
                 answer = CommandExecutor.cmdEscapeRoom(clientSocket, inputString);
-            }
-            if (inputString.startsWith("/snd")) {
+            } else if (inputString.startsWith("/snd")) {
                 answer = CommandExecutor.cmdSendMessageToDefaultRoom(clientSocket, inputString);
-            }
-            if (inputString.startsWith("/str ")) {
+            } else if (inputString.startsWith("/str ")) {
                 answer = CommandExecutor.cmdSendMessageToRoom(clientSocket, inputString);
-            }
-            if (inputString.startsWith("/chatwith ")) {
+            } else if (inputString.startsWith("/chatwith ")) {
                 answer = CommandExecutor.cmdCreatePrivateRoom(clientSocket, inputString);
+            } else if (inputString.startsWith("/myrooms")) {
+                answer = CommandExecutor.cmdMyRooms(clientSocket);
+            }else if (inputString.startsWith("/allrooms")) {
+                answer = CommandExecutor.cmdAllRooms();
             }
         }
-
-        clientSocket.sendServerMessage(new ServerMessage(clientSocket, answer));
-
-//        clientSocket.sendServerMessage(new ServerMessage(clientSocket, "echo: " + inputString));
-//        if (inputString.startsWith("/echo")) {
-//        }
-
+            ServerMessage message = new ServerMessage(clientSocket, answer);
+            Manager.serverResendersManager.addMessage(message);
+//        ServerSendersManager.addServerMessage(clientSocket, answer);
     }
 
 }
