@@ -1,7 +1,5 @@
 package server.sceleton;
 
-import server.persistence.Manager;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,14 +7,11 @@ import java.net.Socket;
 public class SocketCatcher extends Thread{
 
     private ServerSocket serverSocket;
-    private ClientSocketsCreator clientSocketsCreator;
-
 
     public SocketCatcher(ServerSocket serverSocket) {
         super("SocketCatcher");
         this.serverSocket = serverSocket;
-        clientSocketsCreator = new ClientSocketsCreator();
-        clientSocketsCreator.start();
+        new ClientSocketsCreator().start();
     }
 
     @Override
@@ -28,7 +23,7 @@ public class SocketCatcher extends Thread{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Manager.clientSocketsManager.addToCreatorQueue(clientSocket);
+            ChiefManager.clientSocketsManager.addToCreatorQueue(clientSocket);
         }
     }
 

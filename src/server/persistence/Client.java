@@ -1,28 +1,28 @@
 package server.persistence;
 
-import entity.Addresser;
-import entity.Message;
-import entity.Recipient;
-import entity.Resender;
+import entity.*;
+import server.sceleton.ChiefManager;
 import server.sceleton.ClientSocket;
-import server.sceleton.ClientSocketsManager;
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import server.sceleton.Resender;
 
-public class Client implements Recipient, Addresser{
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Client implements Recipient, Addresser, Removable{
 
     private ClientSocket clientSocket;
-    private int id;
+    private String id;
     private String name;
     private boolean isLogin;
-    private List<Room> roomList = new CopyOnWriteArrayList<Room>();
+//    private List<Room> roomList = new CopyOnWriteArrayList<Room>();
+    private List<Room> roomList = new ArrayList<Room>();
 
 
-    public Client(ClientSocket clientSocket, int id) throws IOException {
+    public Client(ClientSocket clientSocket, String id) throws IOException {
         this.id = id;
         this.clientSocket = clientSocket;
-        name = String.valueOf(id);
+        name = "defaultname";
         isLogin = false;
     }
 
@@ -38,7 +38,7 @@ public class Client implements Recipient, Addresser{
         isLogin = false;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -50,13 +50,21 @@ public class Client implements Recipient, Addresser{
         return name;
     }
 
+    public synchronized void addRoom(Room room) {
+        roomList.add(room);
+    }
+
+    public synchronized void removeRoom(Room room) {
+        roomList.remove(room);
+    }
+
+    public synchronized List<Room> getRoomList() {
+        return new ArrayList<Room>(roomList);
+    }
+
     @Override
-    public synchronized void send(Message message) {
-        try {
-            clientSocket.writeOut(message.toString());
-        } catch (IOException e) {
-            Manager.clientSocketsManager.onConnectionBreak(clientSocket);
-        }
+    public void getMessage(Message message) {
+            clientSocket.getMessage(message);
     }
 
     @Override
@@ -69,15 +77,9 @@ public class Client implements Recipient, Addresser{
         return clientSocket.getResender();
     }
 
-    public synchronized void addRoom(Room room) {
-        roomList.add(room);
+    @Override
+    public void removeIt() {
+        ChiefManager.clientsManager.removeElement(this);
     }
 
-    public synchronized void removeRoom(Room room) {
-        roomList.remove(room);
-    }
-
-    public synchronized List<Room> getRoomList() {
-        return roomList;
-    }
 }

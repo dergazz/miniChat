@@ -1,22 +1,19 @@
 package server.sceleton;
 
-import entity.Message;
-import entity.Recipient;
-import entity.Resender;
+import entity.*;
 import server.persistence.Client;
-import server.persistence.Manager;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientSocket implements Recipient {
+public class ClientSocket implements Recipient, Removable {
 
     private Socket socket;
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
-    private ClientSocketListener clientSocketListener;
+//    private ClientSocketListener clientSocketListener;
     private Resender resender;
     private Client client;
 
@@ -24,8 +21,9 @@ public class ClientSocket implements Recipient {
         this.socket = socket;
         inputStream = new DataInputStream(socket.getInputStream());
         outputStream = new DataOutputStream(socket.getOutputStream());
-        clientSocketListener = new ClientSocketListener(this);
-        clientSocketListener.start();
+//        clientSocketListener = new ClientSocketListener(this).start();
+        new ClientSocketListener(this).start();
+//        clientSocketListener.start();
     }
 
     public Client getClient() {
@@ -51,7 +49,6 @@ public class ClientSocket implements Recipient {
     }
 
     public synchronized void writeOut(String string) throws IOException {
-        if (socket.isConnected())
             outputStream.writeUTF(string);
     }
 
@@ -72,12 +69,18 @@ public class ClientSocket implements Recipient {
     }
 
     @Override
-    public synchronized void send(Message message) {
+    public void getMessage(Message message) {
         try {
             writeOut(message.toString());
         } catch (IOException e) {
-            Manager.clientSocketsManager.onConnectionBreak(this);
+            ChiefManager.clientSocketsManager.onConnectionBreak(this);
         }
 
     }
+
+    @Override
+    public void removeIt() {
+        ChiefManager.clientSocketsManager.close(this);
+    }
+
 }

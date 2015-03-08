@@ -1,12 +1,12 @@
 package entity;
 
-import java.io.IOException;
+import server.sceleton.Resender;
 
 public interface Recipient {
 
     String getName();
 
-    public  void send(Message message);
+    public void getMessage(Message message);
 
     public void setResender(Resender resender);
 

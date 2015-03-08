@@ -9,35 +9,36 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class DBUsers {
 
 //    private ArrayList<DBUserEntry> entries = new ArrayList<DBUserEntry>();
-    private List<DBUserEntry> entries = new CopyOnWriteArrayList<DBUserEntry>();
+    private List<DBUserEntry> entries = new ArrayList<DBUserEntry>();
 
 
-    public boolean addEntry(int id, String name, String login, String password) {
+    public synchronized boolean addEntry(String id, String name, String login, String password) {
         DBUserEntry dbUserEntry = new DBUserEntry(id, name, login, password);
         entries.add(dbUserEntry);
+
      return true;
     }
 
-    public boolean findID(int id) {
+    public synchronized boolean findID(String id) {
         for (DBUserEntry dbUserEntry :entries) {
-            if (id == dbUserEntry.id) {
+            if (id.equals(dbUserEntry.id)) {
                 return true;
             }
         }
         return false;
     }
 
-    public String getPassByID(int id) {
+    public String getPassByID(String id) {
         for (DBUserEntry dbUserEntry :entries) {
-            if (id == dbUserEntry.id) {
+            if (id.equals(dbUserEntry.id)) {
                 return dbUserEntry.password;
             }
         }
         return null;
     }
-    public DBUserEntry getEntryByID(int id) {
+    public DBUserEntry getEntryByID(String id) {
         for (DBUserEntry dbUserEntry :entries) {
-            if (id == dbUserEntry.id) {
+            if (id.equals(dbUserEntry.id)) {
                 return dbUserEntry;
             }
         }
@@ -58,13 +59,13 @@ public class DBUsers {
     }
 
     public class DBUserEntry {
-        int id;
+        String id;
         String name;
         ArrayList<Client> friends = new ArrayList<Client>();
         String login;
         String password;
 
-        public DBUserEntry(int id, String name, String login, String password) {
+        public DBUserEntry(String id, String name, String login, String password) {
             this.id = id;
             this.name = name;
             this.login = login;

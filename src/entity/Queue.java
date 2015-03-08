@@ -1,11 +1,13 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Queue<T> {
 
-    private List<T> queue = new CopyOnWriteArrayList<T>();
+//    private List<T> queue = new CopyOnWriteArrayList<T>();
+    private List<T> queue = new ArrayList<T>();
 
 
     public boolean add(T element) {
@@ -23,10 +25,12 @@ public class Queue<T> {
     public T remove() {
         synchronized (queue) {
             while (isEmpty()) {
+
                 try {
                     queue.wait();
                 } catch (InterruptedException e) {
-                    System.out.println("queue.wait() exception");
+//                    e.printStackTrace();
+//                    System.out.println("queue.wait() InterruptedException");
                 }
             }
             return queue.remove(0);
@@ -34,8 +38,8 @@ public class Queue<T> {
     }
 
     public boolean isEmpty() {
-        synchronized (queue) {
+//        synchronized (queue) {
             return queue.isEmpty();
-        }
+//        }
     }
 }

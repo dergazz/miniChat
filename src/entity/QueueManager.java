@@ -8,10 +8,6 @@ public abstract class QueueManager<T> extends Thread {
         queue.add(element);
     }
 
-    public int getQueueSize() {
-        return queue.getSize();
-    }
-
     public abstract void actionOnElement(T element);
 
     @Override

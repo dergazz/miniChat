@@ -9,7 +9,7 @@ public class Printer extends QueueManager<String> {
     @Override
     public void actionOnElement(String string) {
         System.out.println(string);
-        if (getQueueSize() > 10) System.out.println("IN QUEUE: " + getQueueSize());
+//        if (getQueueSize() > 10) System.out.println("IN QUEUE: " + getQueueSize());
     }
 }
 //package client;

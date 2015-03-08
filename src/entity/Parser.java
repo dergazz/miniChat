@@ -11,15 +11,15 @@ public class Parser {
         return newString.substring(space + 1);
     }
 
-    public static Pair parsePair(String string, int lengthOfCommand) {
+    public static Pair<String, String> parsePair(String string, int lengthOfCommand) {
         String newString = string.substring(lengthOfCommand).trim();
         int space = newString.indexOf(' ');
         if (space <=0) {
-            return new Pair(null, null);
+            return new Pair<String, String>(null, null);
         }
         String key = newString.substring(0, space);
         String value = newString.substring(space +1);
-        return new Pair(key, value);
+        return new Pair<String, String>(key, value);
     }
 
 }

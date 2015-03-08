@@ -11,7 +11,6 @@ public class Main {
         try {
             Server server = new Server(port);
             server.init();
-            server.loop();
         } catch (IOException e) {
             System.out.println("new Server() exception.");
         }

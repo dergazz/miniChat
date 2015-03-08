@@ -1,47 +1,48 @@
 package server.persistence;
 
+import entity.InterfaceManager;
+import entity.Message;
 import entity.Pair;
+import server.sceleton.ChiefManager;
 import server.sceleton.ClientSocket;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ClientsManager {
+public class ClientsManager implements InterfaceManager<Client> {
 
 
-    private ClientsRemover clientsRemover = new ClientsRemover();
+//    private ClientsRemover clientsRemover = new ClientsRemover();
     private ClientsCreator clientsCreator = new ClientsCreator();
-    private List<Client> list = new CopyOnWriteArrayList<Client>();
+    private List<Client> list = new ArrayList<Client>();
 
     public ClientsManager() {
-        clientsRemover.start();
+//        clientsRemover.start();
         clientsCreator.start();
     }
 
-    public void addToCreatorQueue(ClientSocket clientSocket, Integer id) {
-        clientsCreator.addToQueue(new Pair<ClientSocket, Integer>(clientSocket, id));
+    public void addToCreatorQueue(ClientSocket clientSocket, String id) {
+        clientsCreator.addToQueue(new Pair<ClientSocket, String>(clientSocket, id));
     }
 
-    public void addClient(Client client) {
-        list.add(client);
-    }
-
-    public Client getClientByID(int id) {
-        for (Client client :list) {
-            if (id == client.getId()) return client;
+    public Client getClientByID(String id) {
+        List<Client> temp = new ArrayList<Client>(list);
+        for (Client client : temp) {
+            if (id.equals(client.getId())) return client;
         }
         return null;
     }
 
-    public Client createClient(ClientSocket clientSocket, int id) {
+    public Client createClient(ClientSocket clientSocket, String id) {
         try {
             Client client = new Client(clientSocket, id);
             clientSocket.setClient(client);
-            addClient(client);
+            addElement(client);
 
-            client.addRoom(Manager.roomsManager.getDefaultRoom());
-            Manager.roomsManager.getDefaultRoom().addClient(client);
+//            client.setName(String.valueOf(id));
+            client.addRoom(ChiefManager.roomsManager.getDefaultRoom());
+            ChiefManager.roomsManager.getDefaultRoom().addElement(client);
 
             client.setOnline();
 
@@ -52,50 +53,76 @@ public class ClientsManager {
         }
     }
 
-    public boolean fillClientInfo(int id) {
-        Manager.dbManager.fillClient(getClientByID(id), id);
+    public boolean fillClientInfo(String id) {
+        ChiefManager.dbManager.fillClient(getClientByID(id), id);
         return true;
     }
 
-    public void removeClient(Client client) {
-        List<Room> roomList = client.getRoomList();
-
-        for (Room room :roomList) {
-//            escapeRoom(client, room);
-            Manager.roomsManager.removeClientFromRoom(client, room);
-        }
-//        client.setRoomList(null);
-        list.remove(client);
-        System.out.println(client.getId() + " is out. Total " + list.size() + ".");
-    }
-
     public boolean addClientToRoom(Client client, Room room){
-        room.addClient(client);
+        room.addElement(client);
         client.addRoom(room);
         return true;
     }
 
     public void escapeRoom(Client client, Room room) {
         client.removeRoom(room);
-        Manager.roomsManager.removeClientFromRoom(client, room);
+        ChiefManager.roomsManager.removeClientFromRoom(client, room);
     }
 
     public void changeName(Client client, String name) {
         client.setName(name);
-        Manager.dbManager.refresh(client);
+        ChiefManager.dbManager.refresh(client);
     }
 
-    public void send(ClientSocket clientSocket, String text) throws IOException {
-//        clientSocket.send();
-        clientSocket.writeOut(text);
-    }
+//    public void sendMessage(ClientSocket clientSocket, String text) throws IOException {
+////        clientSocket.getMessage();
+//        clientSocket.writeOut(text);
+//    }
+//    public void sendMessage(ClientSocket clientSocket, String text) throws IOException {
+////        clientSocket.getMessage();
+//        clientSocket.writeOut(text);
+//    }
 
-    public void send(Client client, String text) throws IOException {
-        send(client.getClientSocket(), text);
-    }
+//    public void sendMessage(Client client, String text) throws IOException {
+//        sendMessage(client.getClientSocket(), text);
+//    }
+//    public void sendMessage(Client client, String text) throws IOException {
+//        sendMessage(client.getClientSocket(), text);
+//    }
 
     public void onConnectionBreak(Client client) {
         client.setOffline();
-        clientsRemover.addToQueue(client);
+        removeElement(client);
+//        clientsRemover.addToQueue(client);
+    }
+
+    @Override
+    public synchronized void addElement(Client element) {
+        list.add(element);
+    }
+
+    @Override
+    public synchronized void removeElement(Client element) {
+        List<Room> roomList = element.getRoomList();
+        for (Room room : roomList) {
+            ChiefManager.roomsManager.removeClientFromRoom(element, room);
+        }
+
+        list.remove(element);
+        System.out.println(element.getId() + " is out. Total " + list.size() + ".");
+    }
+
+    @Override
+    public synchronized int getSize() {
+        return 0;
+    }
+
+    @Override
+    public synchronized boolean isEmpty() {
+        return false;
+    }
+
+    public void sendMessage(Client client, Message message) {
+        client.getMessage(message);
     }
 }

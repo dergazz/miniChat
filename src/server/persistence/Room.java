@@ -1,38 +1,51 @@
 package server.persistence;
 
-import entity.Message;
-import entity.Recipient;
-import entity.Resender;
+import entity.*;
+import server.sceleton.ChiefManager;
+import server.sceleton.Resender;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Room implements Recipient {
+public class Room implements Recipient, InterfaceManager<Client> {
 
     private String name;
     private Resender sender;
-    private List<Client> list = new CopyOnWriteArrayList<Client>();
+    private List<Client> list = new ArrayList<Client>();
 
     public Room(String name) {
         this.name = name;
-        Manager.roomResendersManager.addRecipientToResender(this);
+        ChiefManager.roomResendersManager.addRecipientToResender(this);
     }
 
-    public void addClient(Client client) {
-        list.add(client);
+    @Override
+    public synchronized void addElement(Client element) {
+        list.add(element);
     }
 
-    public void removeClient(Client client) {
-        list.remove(client);
+    @Override
+    public synchronized void removeElement(Client element) {
+        list.remove(element);
     }
 
-    public int getSize() {
+    @Override
+    public synchronized int getSize() {
         return list.size();
     }
 
-    public List<Client> getList() {
-        return list;
+    @Override
+    public synchronized boolean isEmpty() {
+        return list.isEmpty();
+    }
+
+    public  List<Client> getList() {
+        List<Client> clients = new ArrayList<Client>(list);
+        return clients;
+    }
+
+    public boolean clearList() {
+        list = new ArrayList<Client>();
+        return true;
     }
 
     @Override
@@ -51,15 +64,17 @@ public class Room implements Recipient {
     }
 
     @Override
-    public synchronized void send(Message message) {
-
+    public void getMessage(Message message) {
         List<Client> clientList = list;
         for (Client client :clientList) {
-            try {
-                Manager.clientsManager.send(client, message.toString());
-            } catch (IOException e) {
-                Manager.clientsManager.onConnectionBreak(client);
-            }
+//            try {
+//                ChiefManager.clientsManager.sendMessage(client, message.toString());
+                ChiefManager.clientsManager.sendMessage(client, message);
+//                client.getMessage(message);
+//            } catch (IOException e) {
+//                ChiefManager.clientsManager.onConnectionBreak(client);
+//            }
         }
     }
+
 }
